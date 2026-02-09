@@ -19,6 +19,20 @@ const initialConsent = {
   c1: false,
   c2: false,
   c3: false,
+  retainYears1: "1",
+  retainYears2: "1",
+};
+
+const PRODUCT_CODES = {
+  CAREGIVER: "CAREGIVER",
+  CHILD: "CHILD",
+  FETUS: "FETUS",
+  CANCER: "CANCER",
+  HEALTH: "HEALTH",
+  SIMPLE: "SIMPLE",
+  MEDICAL: "MEDICAL",
+  YOUTH: "YOUTH",
+  DEMENTIA_CARE: "DEMENTIA_CARE",
 };
 
 const ErrorText = ({ msg }) => {
@@ -30,6 +44,8 @@ const ErrorText = ({ msg }) => {
 };
 
 export default function LeadForm({ product = "CAREGIVER" }) {
+  const safeProduct = PRODUCT_CODES[product] || PRODUCT_CODES.CAREGIVER;
+
   const [v, setV] = useState(initial);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -39,7 +55,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
 
   const [marketingAgree, setMarketingAgree] = useState(false);
 
-  const agreeRequired = consent.c1 && consent.c2 && consent.c3;
+  const privacyAgree = consent.c1 && consent.c2 && consent.c3;
+  const agreeRequired = privacyAgree && marketingAgree;
 
   const errors = useMemo(() => {
     const e = {};
@@ -47,17 +64,18 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     if (!isValidBirth(v.birth)) e.birth = "* 생년월일(YYYYMMDD)을 입력하세요.";
     if (!isValidPhone(v.phone)) e.phone = "* 연락처를 입력하세요.";
     return e;
-  }, [v, agreeRequired]);
+  }, [v]);
 
-  const canSubmit = Object.keys(errors).length === 0;
+  const canSubmit = Object.keys(errors).length === 0 && agreeRequired;
 
   const setAll = (checked) => {
-    setConsent({
+    setConsent((prev) => ({
+      ...prev,
       all: checked,
       c1: checked,
       c2: checked,
       c3: checked,
-    });
+    }));
   };
 
   const setOne = (key, checked) => {
@@ -68,6 +86,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     });
   };
 
+  const openConsentModal = () => setConsentModalOpen(true);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit || loading) return;
@@ -75,7 +95,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     setLoading(true);
     try {
       await submitLead({
-        product,
+        product: safeProduct,
         name: v.name.trim(),
         birth: v.birth,
         gender: v.gender,
@@ -86,6 +106,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
           outsource: consent.c3,
           all: consent.all,
           marketing: marketingAgree,
+          retainYears1: consent.retainYears1,
+          retainYears2: consent.retainYears2,
         },
       });
 
@@ -101,7 +123,11 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     }
   };
 
-  const openConsentModal = () => setConsentModalOpen(true);
+  const retainOptions = [
+    { label: "1년", value: "1" },
+    { label: "3년", value: "3" },
+    { label: "5년", value: "5" },
+  ];
 
   return (
     <>
@@ -165,7 +191,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={agreeRequired}
+                  checked={privacyAgree}
                   onClick={(e) => {
                     e.preventDefault();
                     openConsentModal();
@@ -188,7 +214,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
                 checked={marketingAgree}
                 onChange={(e) => setMarketingAgree(e.target.checked)}
               />
-              마케팅 수집•이용 동의(선택)
+              마케팅 수집·이용 동의(필수)
             </label>
           </div>
         </div>
@@ -216,7 +242,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
       >
         <div className="space-y-4">
           <p>
-            굿리치㈜ (이하 당사)는 상담신청 및 보험상품 소개를 위해 고객님의
+            굿리치(주) (이하 당사)는 상담신청 및 보험상품 소개를 위해 고객님의
             개인정보 수집, 이용 및 제공에 대한 동의를 받고 있습니다.
             <br />
             개인정보 수집 및 활용에 동의 하십니까?
@@ -232,7 +258,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               전체동의
             </label>
             <p className="mt-2 text-xs text-gray-600">
-              전체동의 선택 시 1~3 항목에 모두 동의합니다.
+              전체동의 선택 시 개인정보 필수 항목(1~3)에 모두 동의합니다.
+              (마케팅 동의는 별도)
             </p>
           </div>
 
@@ -260,9 +287,36 @@ export default function LeadForm({ product = "CAREGIVER" }) {
             <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
               <li>개인정보의 수집·이용 목적 : 보험상품/서비스 소개 및 상담</li>
               <li>수집·이용하는 개인정보의 내용 : 성명, 전화번호</li>
-              <li>개인정보 보유·이용 기간 : 1년 3년 5년</li>
               <li>보험상담 및 가입권유 연락방법 : 전화, 문자</li>
             </ul>
+
+            <div className="space-y-2 pt-1">
+              <p className="text-sm text-gray-700 font-semibold">
+                개인정보 보유·이용 기간
+              </p>
+              <div className="flex items-center gap-4 text-sm text-gray-700">
+                {retainOptions.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="inline-flex items-center gap-2"
+                  >
+                    <input
+                      type="radio"
+                      name="retainYears1"
+                      value={opt.value}
+                      checked={consent.retainYears1 === opt.value}
+                      onChange={(e) =>
+                        setConsent((p) => ({
+                          ...p,
+                          retainYears1: e.target.value,
+                        }))
+                      }
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+              </div>
+            </div>
 
             <div className="text-xs text-gray-600 space-y-1">
               <p>
@@ -307,9 +361,36 @@ export default function LeadForm({ product = "CAREGIVER" }) {
                 개인정보를 제공받는 자의 이용목적 : 보험상품/서비스 소개 및 상담
               </li>
               <li>제공할 개인정보의 내용 : 성명, 전화번호</li>
-              <li>제공받는 자의 개인정보 보유·이용 기간 : 1년 3년 5년</li>
               <li>보험상담 및 가입권유 연락방법 : 전화, 문자</li>
             </ul>
+
+            <div className="space-y-2 pt-1">
+              <p className="text-sm text-gray-700 font-semibold">
+                개인정보 보유·이용 기간
+              </p>
+              <div className="flex items-center gap-4 text-sm text-gray-700">
+                {retainOptions.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="inline-flex items-center gap-2"
+                  >
+                    <input
+                      type="radio"
+                      name="retainYears2"
+                      value={opt.value}
+                      checked={consent.retainYears2 === opt.value}
+                      onChange={(e) =>
+                        setConsent((p) => ({
+                          ...p,
+                          retainYears2: e.target.value,
+                        }))
+                      }
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+              </div>
+            </div>
 
             <div className="text-xs text-gray-600 space-y-1">
               <p>
@@ -346,7 +427,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
             </p>
 
             <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-              <li>위탁 업체명 : ㈜처음소리</li>
+              <li>위탁 업체명 : 광고사(처음소리)</li>
               <li>
                 위탁 목적 : 보험가입 상담신청자 개인정보를 서버에 수집, 보관,
                 처리, 전달, 파기

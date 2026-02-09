@@ -9,9 +9,9 @@ export default function Footer() {
             <p className="text-sm font-bold text-secondary">무료전화상담</p>
             <a
               className="mt-2 inline-block text-2xl font-extrabold text-secondary"
-              href="tel:02-6743-0256"
+              href="tel:1566-3611"
             >
-              02-1234-5678
+              1566-3611
             </a>
             <p className="mt-2 text-sm text-gray-600">
               평일 09:00 ~ 18:00 (점심 12:00~13:00)

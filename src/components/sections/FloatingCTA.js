@@ -1,16 +1,58 @@
 import { useEffect, useState } from "react";
 
+const CTA_CONFIG = {
+  CAREGIVER: {
+    title: "간병보험 상담 신청",
+    subtitle: "1분 입력으로 간병보험 상담 연결",
+    targetId: "caregiver",
+  },
+  CHILD: {
+    title: "어린이보험 상담 신청",
+    subtitle: "1분 입력으로 어린이보험 상담 연결",
+    targetId: "child",
+  },
+  FETUS: {
+    title: "태아보험 상담 신청",
+    subtitle: "1분 입력으로 태아보험 상담 연결",
+    targetId: "fetus",
+  },
+  CANCER: {
+    title: "암보험 상담 신청",
+    subtitle: "1분 입력으로 암보험 상담 연결",
+    targetId: "cancer",
+  },
+  HEALTH: {
+    title: "종합건강보험 상담 신청",
+    subtitle: "1분 입력으로 종합건강보험 상담 연결",
+    targetId: "health",
+  },
+  SIMPLE: {
+    title: "간편보험 상담 신청",
+    subtitle: "1분 입력으로 간편보험 상담 연결",
+    targetId: "simple",
+  },
+  MEDICAL: {
+    title: "실비보험 상담 신청",
+    subtitle: "1분 입력으로 실비보험 상담 연결",
+    targetId: "medical",
+  },
+  YOUTH: {
+    title: "청년보험 상담 신청",
+    subtitle: "1분 입력으로 청년보험 상담 연결",
+    targetId: "youth",
+  },
+  DEMENTIA_CARE: {
+    title: "치매간병보험 상담 신청",
+    subtitle: "1분 입력으로 치매간병보험 상담 연결",
+    targetId: "dementia-care",
+  },
+};
+
 export default function FloatingCTA({ variant = "CAREGIVER" }) {
   const [show, setShow] = useState(false);
 
-  const isChild = variant === "CHILD";
-
-  const title = isChild ? "어린이보험 상담 신청" : "간병보험 상담 신청";
-  const subtitle = isChild
-    ? "1분 입력으로 어린이보험 상담 연결"
-    : "1분 입력으로 간병보험 상담 연결";
-
-  const targetId = isChild ? "child" : "caregiver";
+  const config = CTA_CONFIG[variant] || CTA_CONFIG.CAREGIVER;
+  const { title, subtitle, targetId } = config;
 
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 300);

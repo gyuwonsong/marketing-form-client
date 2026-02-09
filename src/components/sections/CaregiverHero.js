@@ -21,12 +21,21 @@ export default function CaregiverHero() {
             우리 가족에게 맞는 간병 보장 구성과 보험료를 한 번에 확인해보세요.
           </p>
 
-          <div className="h-[360px]">
+          <div className="relative h-[360px]">
             <img
               src={CaregiverHeroImg}
-              alt="간병보험 상담"
+              alt="간병보험 사진"
               className="h-full w-full rounded-2xl object-cover"
             />
+
+            <a
+              href="https://kr.freepik.com/free-photo/wife-visiting-her-ill-husband_14603206.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-3 right-3 text-[10px] leading-none text-white/80 bg-black/30 px-1.5 py-[2px] rounded"
+            >
+              출처: freepik
+            </a>
           </div>
         </div>
 

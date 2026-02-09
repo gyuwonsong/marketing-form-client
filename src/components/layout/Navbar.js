@@ -1,13 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Container from "./Container";
 import { PATHS } from "../../app/routes";
 import { NavLink, useLocation } from "react-router-dom";
 import { MdPhoneInTalk } from "react-icons/md";
 import { FiMenu, FiX } from "react-icons/fi";
+import goodrichLogo from "../../assets/goodrich-logo.svg";
 
 const linkBase = "text-secondary hover:opacity-80 transition";
 const active =
   "font-extrabold text-secondary relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:bg-secondary";
+
+const TEL = "1566-3611";
+
+const NAV_ITEMS = [
+  { to: PATHS.caregiver, label: "간병보험" },
+  { to: PATHS.child, label: "어린이보험" },
+  { to: PATHS.fetus, label: "태아보험" },
+
+  { to: PATHS.cancer, label: "암보험" },
+  { to: PATHS.health, label: "종합건강보험" },
+  { to: PATHS.simple, label: "간편보험" },
+  { to: PATHS.medical, label: "실비보험" },
+  { to: PATHS.youth, label: "청년보험" },
+  { to: PATHS.dementiaCare, label: "치매간병보험" },
+];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -26,39 +42,37 @@ export default function Navbar() {
     };
   }, [open]);
 
+  const desktopItems = useMemo(() => NAV_ITEMS, []);
+
   return (
     <>
       <header className="sticky top-0 z-40 border-b bg-white/90 backdrop-blur">
-        <Container className="flex h-20 items-center justify-between">
-          <NavLink to={PATHS.caregiver} className="flex items-center gap-2">
-            <span className="font-extrabold text-secondary text-2xl md:text-3xl">
-              + Goodrich Plus
+        <div className="mx-auto flex h-20 items-center justify-between max-w-[1400px] px-2">
+          <NavLink to={PATHS.caregiver} className="flex items-center gap-3">
+            <img src={goodrichLogo} alt="Goodrich Plus" className="h-7" />
+            <span className="font-bold text-secondary text-2xl">
+              플러스사업부
             </span>
           </NavLink>
 
+          {/* Desktop */}
           <div className="hidden md:flex items-center gap-6">
-            <nav className="flex items-center gap-6 font-semibold text-lg">
-              <NavLink
-                to={PATHS.caregiver}
-                className={({ isActive }) =>
-                  isActive ? `${linkBase} ${active}` : linkBase
-                }
-              >
-                간병보험
-              </NavLink>
-
-              <NavLink
-                to={PATHS.child}
-                className={({ isActive }) =>
-                  isActive ? `${linkBase} ${active}` : linkBase
-                }
-              >
-                어린이보험
-              </NavLink>
+            <nav className="flex items-center gap-6 font-semibold text-xl">
+              {desktopItems.map((it) => (
+                <NavLink
+                  key={it.to}
+                  to={it.to}
+                  className={({ isActive }) =>
+                    isActive ? `${linkBase} ${active}` : linkBase
+                  }
+                >
+                  {it.label}
+                </NavLink>
+              ))}
             </nav>
 
             <a
-              href="tel:02-1234-5678"
+              href={`tel:${TEL}`}
               className="inline-flex items-center justify-center gap-2 rounded-md bg-main w-40 py-2 text-lg font-semibold text-white hover:bg-main/90"
             >
               <MdPhoneInTalk className="text-2xl" />
@@ -66,9 +80,10 @@ export default function Navbar() {
             </a>
           </div>
 
+          {/* Mobile */}
           <div className="flex items-center gap-2 md:hidden">
             <a
-              href="tel:02-1234-5678"
+              href={`tel:${TEL}`}
               className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-main text-white hover:bg-main/90"
               aria-label="무료전화상담"
             >
@@ -88,9 +103,10 @@ export default function Navbar() {
               )}
             </button>
           </div>
-        </Container>
+        </div>
       </header>
 
+      {/* Mobile Drawer */}
       {open ? (
         <div className="md:hidden fixed inset-0 z-[100]">
           <button
@@ -113,30 +129,22 @@ export default function Navbar() {
             </div>
 
             <nav className="px-5 py-4 space-y-2">
-              <NavLink
-                to={PATHS.caregiver}
-                className={({ isActive }) =>
-                  isActive
-                    ? "block rounded-xl bg-secondary/5 px-4 py-3 text-secondary font-extrabold"
-                    : "block rounded-xl px-4 py-3 text-secondary font-semibold hover:bg-gray-50"
-                }
-              >
-                간병보험
-              </NavLink>
-
-              <NavLink
-                to={PATHS.child}
-                className={({ isActive }) =>
-                  isActive
-                    ? "block rounded-xl bg-secondary/5 px-4 py-3 text-secondary font-extrabold"
-                    : "block rounded-xl px-4 py-3 text-secondary font-semibold hover:bg-gray-50"
-                }
-              >
-                어린이보험
-              </NavLink>
+              {NAV_ITEMS.map((it) => (
+                <NavLink
+                  key={it.to}
+                  to={it.to}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block rounded-xl bg-secondary/5 px-4 py-3 text-secondary font-extrabold"
+                      : "block rounded-xl px-4 py-3 text-secondary font-semibold hover:bg-gray-50"
+                  }
+                >
+                  {it.label}
+                </NavLink>
+              ))}
 
               <a
-                href="tel:02-1234-5678"
+                href={`tel:${TEL}`}
                 className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-main h-14 text-lg font-extrabold text-white hover:bg-main/90"
               >
                 <MdPhoneInTalk className="text-2xl" />

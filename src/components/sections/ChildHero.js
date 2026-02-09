@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import ChildHeroImg from "../../assets/child-hero.jpg";
+import HeroImg from "../../assets/child-hero.jpg";
 
 export default function ChildHero() {
   return (
@@ -21,12 +21,21 @@ export default function ChildHero() {
             우리 아이에게 맞는 보장 구성과 보험료를 간편하게 비교해보세요.
           </p>
 
-          <div className="h-[360px]">
+          <div className="relative h-[360px] min-h-[360px] max-h-[360px] shrink-0">
             <img
-              src={ChildHeroImg}
-              alt="어린이보험 상담"
+              src={HeroImg}
+              alt="어린이보험 사진"
               className="h-full w-full rounded-2xl object-cover"
             />
+
+            <a
+              href="https://www.freepik.com/free-ai-image/kid-playing-with-paper-plane_209492334.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-3 right-3 text-[10px] leading-none text-white/80 bg-black/30 px-1.5 py-[2px] rounded"
+            >
+              출처: freepik
+            </a>
           </div>
         </div>
 
