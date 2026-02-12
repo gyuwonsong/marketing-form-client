@@ -9,8 +9,13 @@ import MedicalInsurancePage from "../pages/MedicalInsurancePage";
 import YouthInsurancePage from "../pages/YouthInsurancePage";
 import DementiaCareInsurancePage from "../pages/DementiaCareInsurancePage";
 
+import { Navigate } from "react-router-dom";
+
 export const ROUTES = [
-  { path: "/", element: <CaregiverInsurancePage />, label: "간병보험" },
+  {
+    path: "/",
+    element: <Navigate to="/caregiver" replace />,
+  },
   {
     path: "/caregiver",
     element: <CaregiverInsurancePage />,
