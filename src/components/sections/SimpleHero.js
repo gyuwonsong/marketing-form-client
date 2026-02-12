@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import HeroImg from "../../assets/simple-hero.jpg";
+import HeroImg from "../../assets/simple-hero.webp";
 
 export default function SimpleHero() {
   return (

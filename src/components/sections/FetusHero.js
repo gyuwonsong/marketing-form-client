@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import HeroImg from "../../assets/fetus-hero.jpg";
+import HeroImg from "../../assets/fetus-hero.webp";
 
 export default function FetusHero() {
   return (

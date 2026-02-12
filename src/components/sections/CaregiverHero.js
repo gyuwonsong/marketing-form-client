@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import CaregiverHeroImg from "../../assets/caregiver-hero.jpg";
+import CaregiverHeroImg from "../../assets/caregiver-hero.webp";
 
 export default function CaregiverHero() {
   return (

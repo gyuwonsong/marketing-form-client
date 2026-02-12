@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import HeroImg from "../../assets/medical-hero.jpg";
+import HeroImg from "../../assets/medical-hero.webp";
 
 export default function MedicalHero() {
   return (

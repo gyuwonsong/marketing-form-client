@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import LeadForm from "./LeadForm";
-import HeroImg from "../../assets/dementia-care-hero.jpg";
+import HeroImg from "../../assets/dementia-care-hero.webp";
 
 export default function DementiaCareHero() {
   return (
