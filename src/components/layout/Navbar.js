@@ -90,18 +90,27 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b bg-white/90 backdrop-blur">
-        <div className="mx-auto h-20 max-w-[1550px] px-6 flex items-center gap-6">
+      <header className="sticky top-0 z-40 border-b bg-white/90 backdrop-blur pt-[env(safe-area-inset-top)]">
+        <div
+          className="
+             mx-auto w-full max-w-[1550px]
+             h-16 md:h-20
+             flex items-center
+             gap-3 md:gap-6
+             pl-[calc(16px+env(safe-area-inset-left))]
+             pr-[calc(16px+env(safe-area-inset-right))]
+             md:px-6
+           "
+        >
           <NavLink
             to={PATHS.caregiver}
             className="flex items-center gap-3 shrink-0"
           >
             <img src={goodrichLogo} alt="Goodrich Plus" className="h-7" />
-            <span className="font-bold text-secondary md:text-2xl text-xl whitespace-nowrap mr-6">
+            <span className="font-bold text-secondary md:text-2xl text-lg sm:text-xl whitespace-nowrap mr-0 md:mr-6">
               플러스사업부
             </span>
           </NavLink>
-
           {/* Desktop */}
           <div className="hidden md:flex flex-1 min-w-0 items-center">
             {isOverflow ? (
@@ -159,7 +168,6 @@ export default function Navbar() {
               </button>
             ) : null}
           </div>
-
           <a
             href={`tel:${TEL}`}
             className="hidden md:inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-main w-40 py-2 text-lg font-semibold text-white hover:bg-main/90 whitespace-nowrap"
@@ -167,17 +175,8 @@ export default function Navbar() {
             <MdPhoneInTalk className="text-2xl" />
             무료전화상담
           </a>
-
           {/* Mobile */}
           <div className="flex items-center gap-2 md:hidden ml-auto">
-            <a
-              href={`tel:${TEL}`}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-main text-white hover:bg-main/90"
-              aria-label="무료전화상담"
-            >
-              <MdPhoneInTalk className="text-2xl" />
-            </a>
-
             <button
               type="button"
               className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-gray-200 bg-white text-secondary hover:bg-gray-50"
@@ -203,7 +202,7 @@ export default function Navbar() {
             aria-label="close"
           />
 
-          <div className="absolute right-0 top-0 h-full w-[82%] max-w-sm bg-white shadow-xl">
+          <div className="absolute right-0 top-0 h-full w-[82%] max-w-sm bg-white shadow-xl pt-[env(safe-area-inset-top)]">
             <div className="flex items-center justify-between border-b px-5 py-4">
               <p className="font-extrabold text-secondary text-lg">메뉴</p>
               <button
