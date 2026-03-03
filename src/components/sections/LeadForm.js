@@ -7,86 +7,90 @@ import Modal from "../common/Modal";
 import { onlyDigits, isValidBirth, isValidPhone } from "../../lib/validators";
 import { submitLead } from "../../lib/api";
 
-const initial = {
+const initialForm = {
   name: "",
-  birth: "",
+  birthDate: "",
   gender: "M",
-  phone: "",
+  phoneNumber: "",
 };
 
-const initialConsent = {
+const initialAgreements = {
   all: false,
-  c1: false,
-  c2: false,
-  c3: false,
-  retainYears1: "1",
-  retainYears2: "1",
+  collectUse: false,
+  thirdParty: false,
+  outsource: false,
+  agreeYear1: "1",
+  agreeYear2: "1",
 };
 
-const PRODUCT_CODES = {
-  CAREGIVER: "CAREGIVER",
-  CHILD: "CHILD",
-  FETUS: "FETUS",
-  CANCER: "CANCER",
-  HEALTH: "HEALTH",
-  SIMPLE: "SIMPLE",
-  MEDICAL: "MEDICAL",
-  YOUTH: "YOUTH",
-  DEMENTIA_CARE: "DEMENTIA_CARE",
+const PRODUCT_TYPES = {
+  CAREGIVER: "간병보험",
+  CHILD: "어린이보험",
+  FETUS: "태아보험",
+  CANCER: "암보험",
+  HEALTH: "종합건강보험",
+  SIMPLE: "간편보험",
+  MEDICAL: "실손보험",
+  YOUTH: "청년보험",
+  DEMENTIA_CARE: "치매간병보험",
 };
 
-const ErrorText = ({ msg }) => {
-  return (
-    <div className="min-h-[18px]">
-      {msg ? <p className="text-sm text-red-600">{msg}</p> : null}
-    </div>
-  );
-};
+const ErrorText = ({ msg }) => (
+  <div className="min-h-[18px]">
+    {msg ? <p className="text-sm text-red-600">{msg}</p> : null}
+  </div>
+);
 
-export default function LeadForm({ product = "CAREGIVER" }) {
-  const safeProduct = PRODUCT_CODES[product] || PRODUCT_CODES.CAREGIVER;
+export default function LeadForm({ type = "CARE GIVER" }) {
+  const safeType = PRODUCT_TYPES[type] ? type : "CAREGIVER";
 
-  const [v, setV] = useState(initial);
+  const [form, setForm] = useState(initialForm);
+  const [agreements, setAgreements] = useState(initialAgreements);
+
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const [consent, setConsent] = useState(initialConsent);
-  const [consentModalOpen, setConsentModalOpen] = useState(false);
-
-  const [marketingAgree, setMarketingAgree] = useState(false);
-
-  const privacyAgree = consent.c1 && consent.c2 && consent.c3;
-  const agreeRequired = privacyAgree && marketingAgree;
+  const privacyAgree =
+    agreements.collectUse && agreements.thirdParty && agreements.outsource;
 
   const errors = useMemo(() => {
     const e = {};
-    if (!v.name.trim()) e.name = "* 이름을 입력하세요.";
-    if (!isValidBirth(v.birth)) e.birth = "* 생년월일(YYYYMMDD)을 입력하세요.";
-    if (!isValidPhone(v.phone)) e.phone = "* 연락처를 입력하세요.";
+    if (!form.name.trim()) e.name = "* 이름을 입력하세요.";
+    if (!isValidBirth(form.birthDate))
+      e.birthDate = "* 생년월일(YYYYMMDD)을 입력하세요.";
+    if (!isValidPhone(form.phoneNumber))
+      e.phoneNumber = "* 연락처를 입력하세요.";
     return e;
-  }, [v]);
+  }, [form]);
 
-  const canSubmit = Object.keys(errors).length === 0 && agreeRequired;
+  const canSubmit = Object.keys(errors).length === 0;
 
-  const setAll = (checked) => {
-    setConsent((prev) => ({
+  const setAllAgreements = (checked) => {
+    setAgreements((prev) => ({
       ...prev,
       all: checked,
-      c1: checked,
-      c2: checked,
-      c3: checked,
+      collectUse: checked,
+      thirdParty: checked,
+      outsource: checked,
     }));
   };
 
-  const setOne = (key, checked) => {
-    setConsent((prev) => {
+  const setAgreement = (key, checked) => {
+    setAgreements((prev) => {
       const next = { ...prev, [key]: checked };
-      const allNext = next.c1 && next.c2 && next.c3;
+      const allNext = next.collectUse && next.thirdParty && next.outsource;
       return { ...next, all: allNext };
     });
   };
 
-  const openConsentModal = () => setConsentModalOpen(true);
+  const retainYearOptions = [
+    { label: "1년", value: "1" },
+    { label: "3년", value: "3" },
+    { label: "5년", value: "5" },
+  ];
+
+  const openAgreementModal = () => setModalOpen(true);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -95,26 +99,18 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     setLoading(true);
     try {
       await submitLead({
-        product: safeProduct,
-        name: v.name.trim(),
-        birth: v.birth,
-        gender: v.gender,
-        phone: v.phone,
-        consent: {
-          collectUse: consent.c1,
-          thirdParty: consent.c2,
-          outsource: consent.c3,
-          all: consent.all,
-          marketing: marketingAgree,
-          retainYears1: consent.retainYears1,
-          retainYears2: consent.retainYears2,
-        },
+        type: PRODUCT_TYPES[safeType],
+        name: form.name.trim(),
+        birthDate: form.birthDate,
+        gender: form.gender,
+        phoneNumber: form.phoneNumber,
+        agreeYear1: Number(agreements.agreeYear1),
+        agreeYear2: Number(agreements.agreeYear2),
       });
 
       setDone(true);
-      setV(initial);
-      setConsent(initialConsent);
-      setMarketingAgree(false);
+      setForm(initialForm);
+      setAgreements(initialAgreements);
     } catch (err) {
       alert("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
       console.error(err);
@@ -123,20 +119,14 @@ export default function LeadForm({ product = "CAREGIVER" }) {
     }
   };
 
-  const retainOptions = [
-    { label: "1년", value: "1" },
-    { label: "3년", value: "3" },
-    { label: "5년", value: "5" },
-  ];
-
   return (
     <>
       <form className="space-y-2" onSubmit={onSubmit}>
         <div className="space-y-2">
           <Input
             placeholder="이름"
-            value={v.name}
-            onChange={(e) => setV((p) => ({ ...p, name: e.target.value }))}
+            value={form.name}
+            onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
           />
           <ErrorText msg={errors.name} />
         </div>
@@ -144,22 +134,22 @@ export default function LeadForm({ product = "CAREGIVER" }) {
         <div className="space-y-2">
           <Input
             placeholder="생년월일 (YYYYMMDD)"
-            value={v.birth}
+            value={form.birthDate}
             onChange={(e) =>
-              setV((p) => ({
+              setForm((p) => ({
                 ...p,
-                birth: onlyDigits(e.target.value).slice(0, 8),
+                birthDate: onlyDigits(e.target.value).slice(0, 8),
               }))
             }
           />
-          <ErrorText msg={errors.birth} />
+          <ErrorText msg={errors.birthDate} />
         </div>
 
         <div className="space-y-2">
           <RadioGroup
             name="gender"
-            value={v.gender}
-            onChange={(gender) => setV((p) => ({ ...p, gender }))}
+            value={form.gender}
+            onChange={(gender) => setForm((p) => ({ ...p, gender }))}
             options={[
               { label: "남", value: "M" },
               { label: "여", value: "F" },
@@ -170,21 +160,21 @@ export default function LeadForm({ product = "CAREGIVER" }) {
         <div className="space-y-2">
           <Input
             placeholder="연락처"
-            value={v.phone}
+            value={form.phoneNumber}
             onChange={(e) =>
-              setV((p) => ({
+              setForm((p) => ({
                 ...p,
-                phone: onlyDigits(e.target.value).slice(0, 11),
+                phoneNumber: onlyDigits(e.target.value).slice(0, 11),
               }))
             }
           />
-          <ErrorText msg={errors.phone} />
+          <ErrorText msg={errors.phoneNumber} />
         </div>
 
         <div className="rounded-xl border bg-gray-50 p-3 space-y-2">
           <button
             type="button"
-            onClick={openConsentModal}
+            onClick={openAgreementModal}
             className="w-full text-left"
           >
             <div className="flex items-center justify-between gap-3">
@@ -194,7 +184,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
                   checked={privacyAgree}
                   onClick={(e) => {
                     e.preventDefault();
-                    openConsentModal();
+                    openAgreementModal();
                   }}
                   readOnly
                 />
@@ -206,17 +196,6 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               </span>
             </div>
           </button>
-
-          <div className="flex items-center justify-between gap-3">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={marketingAgree}
-                onChange={(e) => setMarketingAgree(e.target.checked)}
-              />
-              마케팅 수집·이용 동의(필수)
-            </label>
-          </div>
         </div>
 
         <Button
@@ -236,9 +215,9 @@ export default function LeadForm({ product = "CAREGIVER" }) {
       </form>
 
       <Modal
-        open={consentModalOpen}
+        open={modalOpen}
         title="상담신청 및 보험상품 소개를 위한 개인정보 수집/활용 동의"
-        onClose={() => setConsentModalOpen(false)}
+        onClose={() => setModalOpen(false)}
       >
         <div className="space-y-4">
           <p>
@@ -252,14 +231,13 @@ export default function LeadForm({ product = "CAREGIVER" }) {
             <label className="flex items-center gap-2 font-semibold text-secondary">
               <input
                 type="checkbox"
-                checked={consent.all}
-                onChange={(e) => setAll(e.target.checked)}
+                checked={agreements.all}
+                onChange={(e) => setAllAgreements(e.target.checked)}
               />
               전체동의
             </label>
             <p className="mt-2 text-xs text-gray-600">
               전체동의 선택 시 개인정보 필수 항목(1~3)에 모두 동의합니다.
-              (마케팅 동의는 별도)
             </p>
           </div>
 
@@ -271,8 +249,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               <label className="flex items-center gap-2 text-sm font-semibold">
                 <input
                   type="checkbox"
-                  checked={consent.c1}
-                  onChange={(e) => setOne("c1", e.target.checked)}
+                  checked={agreements.collectUse}
+                  onChange={(e) => setAgreement("collectUse", e.target.checked)}
                 />
                 동의
               </label>
@@ -295,20 +273,20 @@ export default function LeadForm({ product = "CAREGIVER" }) {
                 개인정보 보유·이용 기간
               </p>
               <div className="flex items-center gap-4 text-sm text-gray-700">
-                {retainOptions.map((opt) => (
+                {retainYearOptions.map((opt) => (
                   <label
                     key={opt.value}
                     className="inline-flex items-center gap-2"
                   >
                     <input
                       type="radio"
-                      name="retainYears1"
+                      name="agreeYear1"
                       value={opt.value}
-                      checked={consent.retainYears1 === opt.value}
+                      checked={agreements.agreeYear1 === opt.value}
                       onChange={(e) =>
-                        setConsent((p) => ({
+                        setAgreements((p) => ({
                           ...p,
-                          retainYears1: e.target.value,
+                          agreeYear1: e.target.value,
                         }))
                       }
                     />
@@ -339,8 +317,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               <label className="flex items-center gap-2 text-sm font-semibold">
                 <input
                   type="checkbox"
-                  checked={consent.c2}
-                  onChange={(e) => setOne("c2", e.target.checked)}
+                  checked={agreements.thirdParty}
+                  onChange={(e) => setAgreement("thirdParty", e.target.checked)}
                 />
                 동의
               </label>
@@ -369,20 +347,20 @@ export default function LeadForm({ product = "CAREGIVER" }) {
                 개인정보 보유·이용 기간
               </p>
               <div className="flex items-center gap-4 text-sm text-gray-700">
-                {retainOptions.map((opt) => (
+                {retainYearOptions.map((opt) => (
                   <label
                     key={opt.value}
                     className="inline-flex items-center gap-2"
                   >
                     <input
                       type="radio"
-                      name="retainYears2"
+                      name="agreeYear2"
                       value={opt.value}
-                      checked={consent.retainYears2 === opt.value}
+                      checked={agreements.agreeYear2 === opt.value}
                       onChange={(e) =>
-                        setConsent((p) => ({
+                        setAgreements((p) => ({
                           ...p,
-                          retainYears2: e.target.value,
+                          agreeYear2: e.target.value,
                         }))
                       }
                     />
@@ -413,8 +391,8 @@ export default function LeadForm({ product = "CAREGIVER" }) {
               <label className="flex items-center gap-2 text-sm font-semibold">
                 <input
                   type="checkbox"
-                  checked={consent.c3}
-                  onChange={(e) => setOne("c3", e.target.checked)}
+                  checked={agreements.outsource}
+                  onChange={(e) => setAgreement("outsource", e.target.checked)}
                 />
                 동의
               </label>
@@ -439,7 +417,7 @@ export default function LeadForm({ product = "CAREGIVER" }) {
             <button
               className="w-full rounded-md bg-secondary px-4 py-2 text-lg font-semibold text-white hover:bg-secondary/90"
               type="button"
-              onClick={() => setConsentModalOpen(false)}
+              onClick={() => setModalOpen(false)}
             >
               확인
             </button>
