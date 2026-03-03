@@ -11,7 +11,7 @@ export default function DiagnosisHero() {
       <div className="absolute inset-0 bg-black/60" />
 
       <a
-        href="https://kr.freepik.com/free-photo/wife-visiting-her-ill-husband_14603206.htm"
+        href="https://kr.freepik.com/free-photo/business-people-discussing-analyze-data-chart-teamwork-brainstroming-about-successful-business_1236532.htm#fromView=search&page=1&position=10&uuid=35ece8a8-74d3-4076-8be1-a42e79a83e21&query=%EC%A0%84%EB%AC%B8%EA%B0%80+%EB%B6%84%EC%84%9D+%EC%83%81%EB%8B%B4"
         target="_blank"
         rel="noopener noreferrer"
         className="absolute bottom-2 right-2 text-[8px] sm:text-[10px] leading-none text-white/80 bg-black/30 px-1 py-[1px] rounded"
