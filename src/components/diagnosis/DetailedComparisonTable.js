@@ -52,29 +52,35 @@ const rows = [
 
 export default function ComparisonTable() {
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex justify-between mb-6 text-2xl font-semibold">
-        <div className="text-secondary">월 420,500원 (리모델링 전)</div>
-        <div className="text-main">월 139,289원 (리모델링 후)</div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 text-lg sm:text-2xl font-semibold">
+        <div className="text-secondary mb-2 sm:mb-0 text-center sm:text-left">
+          월 420,500원 (리모델링 전)
+        </div>
+        <div className="text-main text-center sm:text-right">
+          월 139,289원 (리모델링 후)
+        </div>
       </div>
 
-      <div className="rounded-xl overflow-hidden shadow-xl border">
-        <table className="w-full text-center border-collapse">
+      <div className="overflow-x-auto rounded-xl shadow-xl border">
+        <table className="w-full min-w-[600px] text-center border-collapse">
           <thead>
-            <tr className="text-white text-lg">
-              <th className="bg-gray-400 py-5">리모델링 전</th>
-              <th className="bg-gray-400">전문가 의견</th>
-              <th className="bg-secondary">리모델링 후</th>
-              <th className="bg-secondary">전문가 의견</th>
+            <tr className="text-white text-base sm:text-lg">
+              <th className="bg-gray-400 py-3 sm:py-5 px-2 sm:px-4">
+                리모델링 전
+              </th>
+              <th className="bg-gray-400 px-2 sm:px-4">전문가 의견</th>
+              <th className="bg-secondary px-2 sm:px-4">리모델링 후</th>
+              <th className="bg-secondary px-2 sm:px-4">전문가 의견</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="text-base">
             {rows.map((row, idx) => (
               <tr key={idx} className="border-t">
-                <td className="bg-gray-100 py-5 px-6">
+                <td className="bg-gray-100 py-3 sm:py-5 px-2 sm:px-6">
                   {row.before && (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>{row.before.name}</span>
                       <span
                         className={
@@ -92,15 +98,15 @@ export default function ComparisonTable() {
                 {row.beforeNote !== null && (
                   <td
                     rowSpan={row.beforeRowSpan || 1}
-                    className="bg-gray-200 text-[#E5542E] font-bold align-middle"
+                    className="bg-gray-200 text-[#E5542E] font-bold align-middle px-2 sm:px-4"
                   >
                     {row.beforeNote}
                   </td>
                 )}
 
-                <td className="bg-gray-50 py-5 px-6">
+                <td className="bg-gray-50 py-3 sm:py-5 px-2 sm:px-6">
                   {row.after ? (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>{row.after.name}</span>
                       <span
                         className={
@@ -120,7 +126,7 @@ export default function ComparisonTable() {
                 {row.afterNote !== null && (
                   <td
                     rowSpan={row.afterRowSpan || 1}
-                    className="text-main font-bold align-middle"
+                    className="text-main font-bold align-middle px-2 sm:px-4"
                   >
                     {row.afterNote}
                   </td>
