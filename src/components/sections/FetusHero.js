@@ -12,7 +12,7 @@ export default function FetusHero() {
           </p>
 
           <h1 className="text-4xl font-extrabold leading-tight text-secondary md:text-4xl">
-            태아보험으로
+            태아보험으로 출생이후 보장
             <br />
             출산 전부터 든든하게 준비
           </h1>
