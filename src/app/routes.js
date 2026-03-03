@@ -10,6 +10,7 @@ import YouthInsurancePage from "../pages/YouthInsurancePage";
 import DementiaCareInsurancePage from "../pages/DementiaCareInsurancePage";
 
 import { Navigate } from "react-router-dom";
+import ChatbotPopupPage from "../pages/ChatbotPopupPage";
 
 export const ROUTES = [
   {
@@ -34,6 +35,8 @@ export const ROUTES = [
     element: <DementiaCareInsurancePage />,
     label: "치매간병보험",
   },
+
+  { path: "/chatbot", element: <ChatbotPopupPage />, label: "챗봇" },
 ];
 
 export const PATHS = {
@@ -48,4 +51,6 @@ export const PATHS = {
   medical: "/medical",
   youth: "/youth",
   dementiaCare: "/dementia-care",
+
+  chatbot: "/chatbot",
 };
