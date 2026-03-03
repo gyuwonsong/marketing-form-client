@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import ChatbotLauncher from "../chatbot/ChatbotLauncher";
+// import ChatbotLauncher from "../chatbot/ChatbotLauncher";
 
 export default function MainLayout() {
   return (
