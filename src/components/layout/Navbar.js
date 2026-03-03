@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { to: PATHS.medical, label: "실비보험" },
   { to: PATHS.youth, label: "청년보험" },
   { to: PATHS.dementiaCare, label: "치매간병보험" },
+  { to: PATHS.diagnosis, label: "보험마스터" },
 ];
 
 export default function Navbar() {
